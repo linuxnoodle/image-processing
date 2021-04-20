@@ -1,9 +1,7 @@
 #include <string>
-#include <cstdio>
-#include <cstdlib>
+#include <iostream>
 #include <type_traits>
 #include <vector>
-#include <fstream>
 #include <filesystem>
 
 #include "../include/lodepng.hpp"
@@ -83,27 +81,27 @@ int main(){
         error = lodepng::decode(imageData, width, height, currentName.c_str());
 
         if (error){
-            printf("Image decoding error \"%u\": %s\n", error, lodepng_error_text(error));
+            std::cout << "Image decoding error \"" << error << "\": " << lodepng_error_text(error) << "\n";
             return 1;
         }
 
-        imageData = convertImageToBlackAndWhite(imageData, 244, 244, 244);
+        imageData = convertImageToBlackAndWhite(imageData, 220, 220, 220);
 
-        char ascii[height * (width + 1)];
+        std::string ascii;
         for (unsigned long int i = 0; i < imageData.size(); i += 4){
             if ((int)imageData[i] == 255){
-                strcat(ascii, " ");
+                ascii += " ";
             } else {
-                strcat(ascii, "#");
+                ascii += "#";
             }
             
-            if (i / 4 % (int)width == 0){
-                strcat(ascii, "\n");
+            if ((i + 4) / 4 % (int)width == 0){
+                ascii += "\n";
             }
         }
         
         clear();
-        printf("%s\n", ascii);
+        std::cout << ascii << "\n";
         waitUntilNextFrame(24);
     }
 
