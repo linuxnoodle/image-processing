@@ -47,16 +47,9 @@
     }
 #elif defined(__unix__)
     #include <unistd.h>
-    #include <term.h>
-
+    
     void clear(){
-        if (!cur_term){
-            int result;
-            setupterm( NULL, STDOUT_FILENO, &result );
-            if (result <= 0) return;
-        }
-
-        putp(tigetstr("clear"));
+        std::cout << "\033[2J\033[1;1H";
     }
 
     void waitUntilNextFrame(int fps){
