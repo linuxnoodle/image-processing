@@ -1,7 +1,7 @@
 PROJECT:=bad-apple
 
 CC:=g++
-LDFLAGS=-ansi -O2 -std=c++17 -lstdc++fs
+LDFLAGS=-ansi -O2 -std=c++17 -lstdc++fs -static
 UNAME:=$(shell uname)
 ifeq ($(UNAME), Linux)
 	LFLAGS+= -lcurses
