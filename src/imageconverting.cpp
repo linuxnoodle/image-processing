@@ -1,6 +1,9 @@
+#include "../include/imageconverting.hpp"
 #include <stdexcept>
 
-#include "../include/imageconverting.hpp"
+int getIndex(int w, int h, int stride){
+    return h * stride + w;
+}
 
 /**
  * Converts a lodepng image to black and white.
@@ -30,10 +33,10 @@
 }
 
 /**
- * Takes a lodepng image and uses bilinear interpolation to resize it.
+ * Takes a lodepng image and will downscale it to a desired size.
  * Will error if:
- * - width less than or equal to 0
- * - height less than or equal to 0
+ * - width/height isn't evenly divisible by desiredWidth/desiredHeight
+ * - desiredWidth/desiredHeight is greater than or equal to width/height
  * - width and height don't match image data given
  *
  * @param imageData Lodepng image data
@@ -43,7 +46,62 @@
  * @param desiredHeight Output image height
  * @return New resized array
  */
-std::vector<unsigned char> resizeImage(std::vector<unsigned char> imageData, int width, int height, int desiredWidth, int desiredHeight){
+std::vector<unsigned char> downscaleImage(std::vector<unsigned char> imageData, int width, int height, int desiredWidth, int desiredHeight){
+    if (desiredWidth >= width || desiredHeight <= height){
+        throw std::invalid_argument("desiredWidth/desiredHeight greater than or equal to width/height.");
+    } else if (imageData.size() != 4 * width * height) {
+        throw std::invalid_argument("Given width and height don't match imageData.");
+    } else if (width % desiredWidth != 0 || height % desiredHeight != 0){
+        throw std::invalid_argument("width/height is not divisible by desiredWidth/desiredHeight.");
+    }
+    
+    std::vector<unsigned char> downscaledImage;
+    downscaledImage.resize(desiredHeight * desiredWidth);
+
+    int jump = 1;
+
+    for (unsigned long int i = 0; i < imageData.size(); i += (4 * jump)){
+         
+    }
+    return downscaledImage;
+}
+
+// Attempted to implement nearest neighbor scaling. Failed.
+/*std::vector<unsigned char> resizeImage(std::vector<unsigned char> imageData, int width, int height, int desiredWidth, int desiredHeight){
+    if (width <= 0|| height <= 0){
+        throw std::invalid_argument("Width/Height less than or equal to zero.");  
+        return imageData;
+    } else if (imageData.size() != 4 * width * height){
+        throw std::invalid_argument("Given width and height don't match image.");
+        return imageData;
+    }
+
+    std::vector<unsigned char> resizedImage;
+    resizedImage.resize(desiredHeight * desiredWidth);
+    int positionOfClostestX, positionOfClostestY;
+
+    float widthScale = (float)width/desiredWidth, heightScale = (float)height/desiredHeight;
+    
+    for (int i = 0; i < desiredHeight; ++i){
+        positionOfClostestY = (int)(heightScale * i + 0.5);
+        for (int j = 0; j < desiredWidth; ++j){
+            positionOfClostestX = (int)(widthScale * j + 0.5);
+            
+            int originalIndex = getIndex(positionOfClostestX, positionOfClostestY, width);
+            int scaledIndex = getIndex(j, i, desiredWidth); 
+
+            resizedImage[4 * originalIndex] = imageData[4 * scaledIndex];
+            resizedImage[4 * originalIndex + 1] = imageData[4 * scaledIndex + 1];
+            resizedImage[4 * originalIndex + 2] = imageData[4 * scaledIndex + 2];
+            resizedImage[4 * originalIndex + 3] = 255;
+        }
+    }
+
+    return resizedImage;
+}*/
+
+// Attempted to implement bilinear interpolation. Failed. 
+/*std::vector<unsigned char> resizeImage(std::vector<unsigned char> imageData, int width, int height, int desiredWidth, int desiredHeight){
     if (width <= 0|| height <= 0){
         throw std::invalid_argument("Width/Height less than or equal to zero.");  
         return imageData;
@@ -94,4 +152,4 @@ std::vector<unsigned char> resizeImage(std::vector<unsigned char> imageData, int
     }
 
     return resizedImage;
-}
+}*/

@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <stdexcept>
+#include <cmath>
 
 /**
  * Converts a lodepng image to black and white.

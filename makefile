@@ -1,22 +1,27 @@
-CC=g++
-LFLAGS=-ansi -pedantic -Wall -Wextra -O2
+PROJECT:=bad-apple
 
-bad-apple: objects/main.o objects/lodepng.o objects/imageconverting.o
-	$(CC) objects/main.o objects/lodepng.o objects/imageconverting.o $(LFLAGS) -o bad-apple
+CC:=g++
+LFLAGS=-ansi -O2 -std=c++17
+UNAME:=$(shell uname)
+ifeq ($(UNAME), Linux)
+	LFLAGS+= -lcurses
+endif
 
-objects/main.o: src/main.cpp objectsFolder
-	$(CC) -c src/main.cpp -o objects/main.o
+OBJDIR:=objects
+OBJ:=$(addprefix $(OBJDIR)/,main.o lodepng.o imageconverting.o)
 
-objects/lodepng.o: src/lodepng.cpp objectsFolder
-	$(CC) -c src/lodepng.cpp -o objects/lodepng.o
+$(PROJECT): $(OBJ)
+	$(CC) $(OBJ) $(LFLAGS) -o $@
 
-objects/imageconverting.o: src/imageconverting.cpp objectsFolder
-	$(CC) -c src/imageconverting.cpp -o objects/imageconverting.o
+$(OBJDIR)/%.o: src/%.cpp | $(OBJDIR)
+	$(CC) $(LFLAGS) -c $< -o $@
 
-.PHONY: objectsFolder
-objectsFolder:
-	mkdir -p objects
+$(OBJDIR):
+	mkdir $(OBJDIR)
+
+.PHONY: all
+all: clean $(PROJECT)
 
 .PHONY: clean
 clean:
-	rm -f objects/*.o bad-apple
+	rm -r objects bad-apple
