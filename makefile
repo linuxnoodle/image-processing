@@ -1,7 +1,7 @@
 PROJECT:=bad-apple
 
 CC:=g++
-LFLAGS=-ansi -O2 -std=c++17
+LDFLAGS=-ansi -O2 -std=c++17 -lstdc++fs
 UNAME:=$(shell uname)
 ifeq ($(UNAME), Linux)
 	LFLAGS+= -lcurses
@@ -11,10 +11,10 @@ OBJDIR:=objects
 OBJ:=$(addprefix $(OBJDIR)/,main.o lodepng.o imageconverting.o)
 
 $(PROJECT): $(OBJ)
-	$(CC) $(OBJ) $(LFLAGS) -o $@
+	$(CC) $(OBJ) $(LDFLAGS) -o $@
 
 $(OBJDIR)/%.o: src/%.cpp | $(OBJDIR)
-	$(CC) $(LFLAGS) -c $< -o $@
+	$(CC) $(LDFLAGS) -c $< -o $@
 
 $(OBJDIR):
 	mkdir $(OBJDIR)
